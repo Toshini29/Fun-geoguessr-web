@@ -2,102 +2,146 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Luthen's Coordinates</title>
-  <meta name="description" content="Nine encrypted transmissions. Nine places on Earth. Decode them.">
-  <meta name="theme-color" content="#0a0c0d">
+  <meta name="description" content="Ten worlds. No names. Jump in, look around, and work out where in the galaxy you've landed.">
+  <meta name="theme-color" content="#03050a">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@600;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Boot sequence -->
-  <div id="boot" class="boot" aria-live="polite">
+  <canvas id="stage" aria-label="Drag to look around the world you landed on"></canvas>
+
+  <!-- boot -->
+  <section id="boot" class="screen boot">
     <div class="boot-inner">
       <pre id="boot-text" class="boot-text"></pre>
-      <button id="boot-accept" class="btn btn-primary boot-accept" hidden>Accept transmission</button>
-      <button id="boot-skip" class="boot-skip">skip ›</button>
+      <button id="boot-accept" class="btn primary" hidden>Accept transmission</button>
     </div>
-  </div>
+    <button id="boot-skip" class="boot-skip">skip ›</button>
+  </section>
 
-  <div class="scanlines" aria-hidden="true"></div>
-
-  <header class="top">
-    <div class="wrap top-inner">
-      <div>
-        <p class="eyebrow">Encrypted channel · Fulcrum relay</p>
-        <h1 class="title">Luthen's Coordinates</h1>
-      </div>
-      <div class="progress" aria-label="Transmissions decoded">
-        <div class="progress-count"><span id="decoded-count">0</span><span class="dim">/9</span></div>
-        <div class="progress-label">decoded</div>
-        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+  <!-- title -->
+  <section id="title" class="screen title" hidden>
+    <div class="title-inner">
+      <p class="eyebrow">Fulcrum relay · priority one</p>
+      <h1 class="logo">Luthen's<br>Coordinates</h1>
+      <p id="title-lead" class="lead"></p>
+      <ol class="howto">
+        <li><b>Jump.</b> Each sighting drops you on an unnamed world.</li>
+        <li><b>Look around.</b> Drag to turn, pinch to zoom. The clues are everywhere.</li>
+        <li><b>Pin it.</b> Open the navicomputer and choose the world you think Luthen was on.</li>
+      </ol>
+      <div class="actions">
+        <button id="btn-start" class="btn primary">Begin mission</button>
+        <button id="btn-restart" class="btn ghost" hidden>Restart</button>
+        <button class="btn ghost icon sound-btn" aria-label="Toggle sound"></button>
       </div>
     </div>
-  </header>
+  </section>
 
-  <main class="wrap">
-    <section class="briefing">
-      <div class="briefing-copy">
-        <h2 class="section-label">// Mission briefing</h2>
-        <p id="briefing-greeting" class="lead"></p>
-        <ol class="steps">
-          <li><b>Launch the challenge.</b> GeoGuessr will drop you somewhere on Earth: a place where a scene from the saga was filmed.</li>
-          <li><b>Match the frame to a transmission.</b> Each dossier below describes a scene and what you might see. The rounds are shuffled, so working out which dossier you're in is part of the job.</li>
-          <li><b>Decode it.</b> Name the country to crack the file. Intel helps, but every piece you spend lowers your rating.</li>
-        </ol>
-        <div class="briefing-actions">
-          <a id="challenge-btn" class="btn btn-primary" target="_blank" rel="noopener">Launch GeoGuessr challenge ↗</a>
-          <button id="reset-btn" class="btn btn-ghost">Wipe progress</button>
-        </div>
-        <p id="challenge-note" class="note" hidden>Challenge link not set yet. Add it in <code>config.js</code>.</p>
-      </div>
-      <aside class="rules">
-        <h3 class="section-label">// Rules of engagement</h3>
-        <ul>
-          <li>No moving: you get one frame and that's it.</li>
-          <li>Don't zoom in on the signs. Earn it.</li>
-          <li>Trust nobody, especially the compass.</li>
-        </ul>
-        <div class="rating">
-          <span class="dim">Current rating</span>
-          <strong id="rating">—</strong>
-        </div>
-      </aside>
-    </section>
-
-    <section>
-      <h2 class="section-label">// Intercepted transmissions</h2>
-      <div id="grid" class="grid"></div>
-    </section>
-  </main>
-
-  <footer class="wrap foot">
-    <span>Made with care for one very specific agent.</span>
-    <a href="card.html">Printable QR card</a>
-  </footer>
-
-  <!-- Dossier modal -->
-  <dialog id="dossier" class="dossier">
-    <form method="dialog" class="dossier-close-form"><button class="dossier-close" aria-label="Close">✕</button></form>
-    <div id="dossier-body"></div>
-  </dialog>
-
-  <!-- Finale -->
-  <div id="finale" class="finale" hidden>
-    <div class="finale-inner">
-      <p class="eyebrow">All transmissions decoded</p>
-      <h2 class="finale-title">Happy Birthday,<br><span id="finale-name"></span></h2>
-      <p id="finale-message" class="finale-message"></p>
-      <p class="finale-sign">— <span id="finale-sender"></span></p>
-      <div class="finale-stats" id="finale-stats"></div>
-      <button id="finale-close" class="btn btn-primary">Return to the network</button>
+  <!-- orbit -->
+  <section id="orbit" class="screen orbit" hidden>
+    <div class="orbit-top">
+      <p class="eyebrow">Luthen sighting <span id="orbit-round"></span></p>
+      <h2 class="orbit-title">Unidentified world</h2>
+      <p id="orbit-scan" class="scan"></p>
+      <p id="orbit-story" class="story"></p>
     </div>
-  </div>
+    <div class="orbit-bottom">
+      <p class="tiny dim">Drag to spin the planet</p>
+      <button id="btn-descend" class="btn primary">Descend to surface</button>
+    </div>
+  </section>
+
+  <!-- surface HUD -->
+  <section id="surface" class="hud" hidden>
+    <div class="hud-top">
+      <div class="pill"><span class="dim">TX</span> <span id="hud-round"></span></div>
+      <div class="pill" id="hud-score"></div>
+      <button class="pill icon sound-btn" aria-label="Toggle sound"></button>
+    </div>
+    <div class="compass" aria-hidden="true"><div id="compass-strip" class="compass-strip"></div><div class="compass-mark"></div></div>
+    <div id="hud-hint" class="hud-hint">Drag to look around · pinch to zoom</div>
+    <div class="hud-bottom">
+      <button id="btn-intel" class="btn ghost solid">Intel <span class="badge" id="intel-count">3</span></button>
+      <button id="btn-nav" class="btn primary">Navicomputer ▸</button>
+    </div>
+  </section>
+
+  <!-- intel sheet -->
+  <section id="intel" class="sheet" hidden>
+    <div class="sheet-head">
+      <h3>Luthen's intel</h3>
+      <button id="intel-close" class="btn ghost small">Close</button>
+    </div>
+    <div id="intel-list" class="intel-list"></div>
+    <p id="intel-cost" class="tiny dim"></p>
+  </section>
+
+  <!-- navicomputer -->
+  <section id="nav" class="nav" hidden>
+    <canvas id="navmap" aria-label="Galaxy map: tap a world to set coordinates"></canvas>
+    <div class="nav-top">
+      <button id="btn-nav-back" class="btn ghost solid small">‹ Surface</button>
+      <p class="eyebrow">Navicomputer</p>
+      <button id="btn-nav-list" class="btn ghost solid small">List</button>
+    </div>
+    <div id="nav-list" class="nav-list" hidden></div>
+    <div class="nav-bottom">
+      <div id="nav-selected" class="nav-selected">Tap a world to set coordinates</div>
+      <button id="btn-lock" class="btn primary" disabled>Lock coordinates</button>
+    </div>
+  </section>
+
+  <!-- result -->
+  <section id="result" class="result" hidden>
+    <div class="result-card">
+      <div class="res-head">
+        <span id="res-status" class="res-status"></span>
+        <span><b id="res-points" class="res-points"></b> <span id="res-spent" class="tiny dim"></span></span>
+      </div>
+      <h2 id="res-name" class="res-name"></h2>
+      <p id="res-source" class="res-source"></p>
+      <p id="res-line" class="res-line"></p>
+      <p class="res-story"><span class="tag">Trail log</span> <span id="res-story"></span></p>
+      <p id="res-earth" class="res-earth"></p>
+      <button id="btn-next" class="btn primary wide">Next transmission ▸</button>
+    </div>
+  </section>
+
+  <!-- final -->
+  <section id="final" class="screen final" hidden>
+    <div class="final-inner">
+      <p class="eyebrow">Sealed message from L.</p>
+      <p class="twist">You thought you were tracking me. I was testing you. Ten worlds, and you never lost the trail. Consider yourself recruited.</p>
+      <h2 class="final-title">Happy birthday,<br><span id="final-name"></span></h2>
+      <div class="final-stats">
+        <div><strong id="final-score"></strong><span>of <span id="final-max"></span> points</span></div>
+        <div><strong id="final-rank"></strong><span>final rating</span></div>
+      </div>
+      <ol id="final-list" class="final-list"></ol>
+      <p id="final-msg" class="final-msg"></p>
+      <p id="final-sign" class="final-sign"></p>
+      <div id="final-bonus" class="bonus" hidden>
+        <p class="eyebrow">Bonus mission</p>
+        <p>Every world you just visited was filmed somewhere real. Find them on Earth.</p>
+        <a id="final-bonus-link" class="btn primary" target="_blank" rel="noopener">Play the GeoGuessr challenge ↗</a>
+      </div>
+      <div class="actions center">
+        <button id="btn-again" class="btn ghost">Play again</button>
+        <button id="btn-final-title" class="btn ghost">Title screen</button>
+      </div>
+    </div>
+  </section>
 
   <script src="config.js"></script>
-  <script src="dossiers.js"></script>
-  <script src="app.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/scenes.js"></script>
+  <script src="js/worlds.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/game.js"></script>
 </body>
 </html>

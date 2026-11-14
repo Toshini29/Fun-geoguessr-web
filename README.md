@@ -1,16 +1,27 @@
 # Luthen's Coordinates
 
-A companion site for a custom GeoGuessr map. Nine encrypted "transmissions" (one per map location) each describe the Star Wars / Andor scene filmed there, with three hints you decrypt one at a time. Solve each one by naming the country.
+A Star Wars-themed GeoGuessr-style birthday game. Each round jumps you through hyperspace to an unnamed world.
+You see it from orbit, land, look around a 360° scene for clues, then pin the world on a galaxy navicomputer.
+Ten rounds, up to 5,000 points each. The final screen has a birthday message and links to a real GeoGuessr challenge
+of the filming locations.
+
+Everything is drawn in code (no images or movie assets) and sound is synthesized, so it works offline once loaded.
 
 ## Files
-- `index.html`, `styles.css`, `app.js`: the site
-- `dossiers.js`: the scene descriptions and hints for each location
-- `config.js`: **edit this** (his name, your name, challenge link, site URL)
+- `index.html`, `styles.css`: page and layout
+- `js/engine.js`: renderer (hyperspace, planets, 360° scenes, galaxy map)
+- `js/scenes.js`: the ten world scenes
+- `js/worlds.js`: world data, hints, reveals, map positions
+- `js/audio.js`: sound effects
+- `js/game.js`: game flow
+- `config.js`: **edit this**: names, birthday message, GeoGuessr challenge link, site URL
 - `card.html`: printable 4×6 in card with a QR code
 - `locations.json`: the original GeoGuessr map export
 
-## Publish (GitHub Pages)
-1. Push these files to the root of the repo's `main` branch.
-2. On GitHub: **Settings → Pages → Source: Deploy from a branch → `main` / `(root)`**.
-3. After a minute or so the site is at `https://<username>.github.io/<repo>/`.
-4. Put that URL in `config.js` as `siteUrl`, push again, then open `/card.html` and print.
+## Testing
+- `?skip` skips the intro.
+- `?scene=hoth` (or any world id) jumps straight to a surface; `?orbit=hoth` shows a planet. Test links never save progress.
+- Progress is saved per device. Use **Restart** on the title screen to wipe it.
+
+## Publish
+Push to `main`. GitHub Pages (Settings → Pages → `main` / root) serves it at `https://<username>.github.io/<repo>/`.

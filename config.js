@@ -8,8 +8,7 @@ window.MISSION_CONFIG = {
   // Your name / sign-off
   senderName: "Your handler",
 
-  // Paste the GeoGuessr Challenge link here once you've created it
-  // (Map page -> Play -> Challenge -> copy the invite link)
+  // Your GeoGuessr challenge: shown as a bonus mission on the final screen
   challengeUrl: "https://www.geoguessr.com/challenge/Iyy8wLzjRtpJLqCx",
 
   // The public URL of this site after you publish it (used by card.html for the QR code)
@@ -18,5 +17,5 @@ window.MISSION_CONFIG = {
 
   // Shown when every transmission has been decoded
   finaleMessage:
-    "Every coordinate decoded. Every signal traced. You did it without a map, without a guide, and without ever being told what you were looking for. That's how the best agents work. Happy birthday — the rebellion is lucky to have you."
+    "Happy birthday from the whole network. The rebellion is lucky to have you."
 };
