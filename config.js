@@ -10,11 +10,11 @@ window.MISSION_CONFIG = {
 
   // Paste the GeoGuessr Challenge link here once you've created it
   // (Map page -> Play -> Challenge -> copy the invite link)
-  challengeUrl: "",
+  challengeUrl: "https://www.geoguessr.com/challenge/Iyy8wLzjRtpJLqCx",
 
   // The public URL of this site after you publish it (used by card.html for the QR code)
   // e.g. "https://toshini29.github.io/Fun-geoguessr-web/"
-  siteUrl: "",
+  siteUrl: "https://toshini29.github.io/Fun-geoguessr-web/",
 
   // Shown when every transmission has been decoded
   finaleMessage:
