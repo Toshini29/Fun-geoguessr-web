@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mission Card</title>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@600;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --ink:#0a0c0d; --amber:#f0a93a; --red:#d9432e; --paper:#121516; --dim:#7d8a8c; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:#2a2f31; color:#ddd; font-family:"IBM Plex Mono", monospace; padding:24px 16px; }
+    .controls { max-width:560px; margin:0 auto 24px; display:grid; gap:10px; }
+    .controls label { font-size:12px; letter-spacing:.15em; text-transform:uppercase; color:#aab; }
+    .controls input { width:100%; padding:10px 12px; font-family:inherit; background:#0d1011; color:#eee; border:1px solid #3a4448; }
+    .controls button { justify-self:start; padding:12px 18px; font-family:inherit; font-weight:600; letter-spacing:.12em; text-transform:uppercase; background:var(--amber); color:#120c03; border:0; cursor:pointer; }
+    .hint { font-size:12px; color:#8a9496; margin:0; }
+
+    /* 4 x 6 inch card */
+    .card {
+      width:6in; height:4in; margin:0 auto; position:relative; overflow:hidden;
+      background:var(--paper); color:#e6e6e0; display:grid; grid-template-columns:1fr 1.55in; gap:.3in;
+      padding:.35in .4in; border:1px solid #000;
+      background-image: repeating-linear-gradient(-45deg, rgba(217,67,46,.07) 0 8px, transparent 8px 16px);
+      -webkit-print-color-adjust:exact; print-color-adjust:exact;
+    }
+    .card::before { content:""; position:absolute; inset:.14in; border:1px solid rgba(240,169,58,.45); pointer-events:none; }
+    .corner { position:absolute; right:0; bottom:0; width:0; height:0; border-left:.45in solid transparent; border-bottom:.45in solid var(--red); }
+    .eyebrow { color:var(--red); font-size:8pt; letter-spacing:.3em; text-transform:uppercase; margin:0; }
+    h1 { font-family:"Big Shoulders Stencil Display", Impact, sans-serif; font-weight:800; text-transform:uppercase; font-size:34pt; line-height:.92; margin:.08in 0 .12in; color:var(--amber); }
+    .to { font-size:9pt; margin:0 0 .08in; letter-spacing:.12em; text-transform:uppercase; color:#bbb; }
+    .msg { font-size:9pt; line-height:1.5; margin:0; color:#d6d6d0; }
+    .meta { position:absolute; left:.4in; bottom:.3in; font-size:7pt; letter-spacing:.2em; color:var(--dim); text-transform:uppercase; }
+    .qr-col { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.08in; }
+    .qr { background:#fff; padding:.08in; width:1.5in; height:1.5in; }
+    .qr img, .qr canvas { width:100% !important; height:100% !important; display:block; image-rendering:pixelated; }
+    .scan { font-size:7pt; letter-spacing:.25em; text-transform:uppercase; color:var(--amber); text-align:center; }
+
+    @media print {
+      @page { size: 6in 4in; margin:0; }
+      body { background:none; padding:0; }
+      .controls { display:none; }
+      .card { border:0; margin:0; }
+    }
+    .card-holder { overflow:hidden; }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <label for="url">Site URL (the QR code points here)</label>
+    <input id="url" placeholder="https://yourname.github.io/your-repo/">
+    <label for="name">His name</label>
+    <input id="name">
+    <label for="from">From</label>
+    <input id="from">
+    <p class="hint">Print at 100% scale on 4×6 in card stock (or A4 and trim). Turn on "Background graphics" in the print dialog.</p>
+    <button onclick="window.print()">Print card</button>
+  </div>
+
+  <div class="card">
+    <div>
+      <p class="eyebrow">Priority transmission · eyes only</p>
+      <h1>Luthen's<br>Coordinates</h1>
+      <p class="to">For agent <span id="c-name"></span></p>
+      <p class="msg">Nine places on this planet stood in for worlds in a galaxy far, far away. The Empire would rather you never found them. Happy birthday. Your mission starts now.</p>
+      <div class="meta">From: <span id="c-from"></span> · Fulcrum relay</div>
+    </div>
+    <div class="qr-col">
+      <div class="qr" id="qr"></div>
+      <div class="scan">Scan to decrypt</div>
+    </div>
+    <div class="corner"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="config.js"></script>
+  <script>
+    const CFG = window.MISSION_CONFIG || {};
+    const here = location.href.replace(/card\.html.*$/, "");
+    const urlIn = document.getElementById("url"), nameIn = document.getElementById("name"), fromIn = document.getElementById("from");
+    urlIn.value = CFG.siteUrl || (location.protocol.startsWith("http") ? here : "");
+    nameIn.value = CFG.agentName || "";
+    fromIn.value = CFG.senderName || "";
+    let qr;
+    function draw() {
+      document.getElementById("c-name").textContent = nameIn.value || "—";
+      document.getElementById("c-from").textContent = fromIn.value || "—";
+      const box = document.getElementById("qr");
+      box.innerHTML = "";
+      qr = new QRCode(box, { text: urlIn.value || "https://example.com", width: 512, height: 512, colorDark: "#0a0c0d", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
+    }
+    [urlIn, nameIn, fromIn].forEach(el => el.addEventListener("input", draw));
+    draw();
+    // shrink the on-screen preview on phones (printing is unaffected)
+    const card = document.querySelector(".card");
+    function fit() {
+      const s = Math.min(1, (window.innerWidth - 32) / card.offsetWidth);
+      card.style.transform = s < 1 ? `scale(${s})` : "";
+      card.style.transformOrigin = "top left";
+      card.style.marginBottom = s < 1 ? `${-(1 - s) * card.offsetHeight}px` : "";
+    }
+    window.addEventListener("resize", fit); fit();
+    window.addEventListener("beforeprint", () => { card.style.transform = ""; card.style.marginBottom = ""; });
+    window.addEventListener("afterprint", fit);
+  </script>
+</body>
+</html>
