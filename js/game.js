@@ -165,8 +165,6 @@
   };
 
   function showResult(hit, d, pts, spent, w) {
-    const earth = w.earth || {};
-    const link = earth.q ? ' <a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(earth.q) + '" target="_blank" rel="noopener">See it on Google Maps ↗</a>' : '';
     $('#res-status').textContent = hit ? 'Direct hit' : 'Off by ' + fmt(Math.round((d * 60000) / 100) * 100) + ' light-years';
     $('#res-status').className = 'res-status ' + (hit ? 'good' : 'bad');
     $('#res-points').textContent = '+' + fmt(pts);
@@ -174,7 +172,6 @@
     $('#res-name').textContent = w.name;
     $('#res-source').textContent = w.source;
     $('#res-line').textContent = w.line; $('#res-story').textContent = w.story;
-    $('#res-earth').innerHTML = '<span class="dim">Filmed on Earth:</span> ' + esc(earth.place || 'In a studio') + '.' + link;
     $('#btn-next').textContent = st.round >= TOTAL ? 'See final report' : 'Next transmission ▸';
     $('#result').hidden = false;
   }
